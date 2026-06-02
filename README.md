@@ -22,5 +22,4 @@ A mod for Gorilla Tag that lets you ragdoll like Garry's Mod.
 ### Credits
 - Fixed & SS By: @InoxiGtag
 - Original Made By: @iiDk-the-actual
-
 > This product is not affiliated with Gorilla Tag or Another Axiom LLC and is not endorsed or otherwise sponsored by Another Axiom LLC. Portions of the materials contained herein are property of Another Axiom LLC. © 2024 Another Axiom LLC.
