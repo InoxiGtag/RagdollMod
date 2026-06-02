@@ -19,6 +19,12 @@ A mod for Gorilla Tag that lets you ragdoll like Garry's Mod.
 
 ---
 
+## Settings
+- Ragdoll Velocity
+- Ragdoll Free Cam
+
+---
+
 ## Credits
 - Fixed & SS By: @InoxiGtag
 - Original Made By: @iiDk-the-actual
