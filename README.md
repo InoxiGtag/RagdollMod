@@ -2,6 +2,8 @@
 A mod for Gorilla Tag that lets you ragdoll like Garry's Mod.
 
 <img src="https://s3.ezgif.com/tmp/ezgif-33e593d2b0cc088b.gif">
+<img src="https://s3.ezgif.com/tmp/ezgif-3b26d6795821c79d.gif">
+<img src="https://s3.ezgif.com/tmp/ezgif-38212f4c81ad68cd.gif">
 
 ---
 
