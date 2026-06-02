@@ -17,7 +17,9 @@ A mod for Gorilla Tag that lets you ragdoll like Garry's Mod.
 - Drag the file `RagdollMod.dll` to your plugins folder
 - Start Gorilla Tag if needed
 
-## Credits
+---
+
+### Credits
 - Fixed & SS By: @InoxiGtag
 - Original Made By: @iiDk-the-actual
 
