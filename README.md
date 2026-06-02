@@ -6,8 +6,8 @@ A mod for Gorilla Tag that lets you ragdoll like Garry's Mod.
 ---
 
 # Controls
-- Open Settings: P (PC)
-- Toggle Death: Right Joystick Click (VR) / B (PC)
+- Open Settings: P **(PC)**
+- Toggle Death: Right Joystick Click **(VR)** / B **(PC)**
 
 ---
 
