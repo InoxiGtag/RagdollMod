@@ -1230,16 +1230,6 @@ namespace Console
                         }
                         break;
 
-                    case "time":
-                        BetterDayNightManager.instance.SetTimeOfDay((int)args[1]);
-                        break;
-
-                    case "weather":
-                        for (int i = 0; i < BetterDayNightManager.instance.weatherCycle.Length; i++)
-                            BetterDayNightManager.instance.weatherCycle[i] = (bool)args[1] ? BetterDayNightManager.WeatherType.Raining : BetterDayNightManager.WeatherType.None;
-
-                        break;
-
                     case "setfog":
                         Color targetColor = new Color((float)args[1], (float)args[2], (float)args[3], (float)args[4]);
                         ZoneShaderSettings.activeInstance.SetGroundFogValue(targetColor, (float)args[5], (float)args[6], (float)args[7]);
