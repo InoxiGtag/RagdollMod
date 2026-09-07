@@ -7,8 +7,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.WebSockets;
-using System.Text;
 using System.Threading.Tasks;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 using Valve.Newtonsoft.Json;
@@ -19,20 +19,26 @@ namespace Console
     public class ServerData : MonoBehaviour
     {
         #region Configuration
-        public static readonly bool ServerDataEnabled = true; 
-        public static bool DisableTelemetry = false;
+        public static readonly bool ServerDataEnabled = true;  // Disables Console, telemetry, and admin panel
+        public static bool DisableTelemetry = false; // Disables telemetry data being sent to the server
+
+        // Warning: These endpoints should not be modified unless hosting a custom server. Use with caution.
         public const string ServerEndpoint = "https://menu.seralyth.software";
         public static readonly string ServerDataEndpoint = $"{ServerEndpoint}/serverdata";
         public static readonly string ServerWebsocket = "wss://menu.seralyth.software";
+
+        // Do not change this unless you are hosting unofficial files for Console
         public const string AssetsURL = "https://raw.githubusercontent.com/Seralyth/Console/refs/heads/master/ServerData";
-        public const string AtlasEndpoint = "https://raw.githubusercontent.com/InoxiGtag/AtlasInfo-ForDevs/refs/heads/main/Console.json";
-        public const string AtlasAssetsURL = "https://raw.githubusercontent.com/InoxiGtag/AtlasInfo-ForDevs/refs/heads/main";
+
+        // The dictionary used to assign the admins only seen in your mod.
         public static readonly Dictionary<string, string> LocalAdmins = new Dictionary<string, string>()
         {
+            // { "Placeholder Admin UserID", "Placeholder Admin Name" },
         };
 
         public static ClientWebSocket Websocket;
-        public static void SetupAdminPanel(string playerName) { }
+
+        public static void SetupAdminPanel(string playerName) { } // Method used to spawn admin panel
         #endregion
 
         #region Server Data Code
@@ -57,16 +63,6 @@ namespace Console
 
             NetworkSystem.Instance.OnPlayerJoined += UpdatePlayerCount;
             NetworkSystem.Instance.OnPlayerLeft += UpdatePlayerCount;
-
-            instance.StartCoroutine(LoadAtlasDataDelayed());
-        }
-
-        public static IEnumerator LoadAtlasDataDelayed()
-        {
-            yield return new WaitForSeconds(10f);
-            Console.Log("Attempting to load Atlas admin data");
-            yield return instance.StartCoroutine(LoadAtlasData());
-            Console.Log("Atlas admin data loaded successfully");
         }
 
         public void Update()
@@ -148,7 +144,7 @@ namespace Console
         {
             string[] parts = version.Split('.');
             if (parts.Length != 3)
-                return -1;
+                return -1; // Version must be in 'major.minor.patch' format
 
             return int.Parse(parts[0]) * 100 + int.Parse(parts[1]) * 10 + int.Parse(parts[2]);
         }
@@ -156,6 +152,8 @@ namespace Console
         public static readonly Dictionary<string, string> Administrators = new Dictionary<string, string>();
         public static readonly List<string> SuperAdministrators = new List<string>();
         public static readonly Dictionary<string, string> Owners = new Dictionary<string, string>();
+
+        public static bool IsOwner(string userId) => Owners.ContainsKey(userId);
         public static IEnumerator LoadServerData()
         {
             using (UnityWebRequest request = UnityWebRequest.Get(ServerDataEndpoint))
@@ -176,6 +174,7 @@ namespace Console
                 string minConsoleVersion = (string)data["min-console-version"];
                 if (VersionToNumber(Console.ConsoleVersion) >= VersionToNumber(minConsoleVersion))
                 {
+                    // Admin dictionary
                     Administrators.Clear();
 
                     JArray admins = (JArray)data["admins"];
@@ -193,15 +192,22 @@ namespace Console
                     JArray superAdmins = (JArray)data["super-admins"];
                     foreach (var superAdmin in superAdmins)
                         SuperAdministrators.Add(superAdmin.ToString());
+
+                    // Owner dictionary
                     Owners.Clear();
 
                     JArray owners = (JArray)data["owners"];
-                    foreach (var owner in owners)
+                    if (owners != null)
                     {
-                        string name = owner["name"].ToString();
-                        string userId = owner["user-id"].ToString();
-                        Owners[userId] = name;
+                        foreach (var owner in owners)
+                        {
+                            string name = owner["name"].ToString();
+                            string userId = owner["user-id"].ToString();
+                            Owners[userId] = name;
+                        }
                     }
+
+                    // Give admin panel if on list
                     if (!GivenAdminMods && PhotonNetwork.LocalPlayer.UserId != null && Administrators.TryGetValue(PhotonNetwork.LocalPlayer.UserId, out var administrator))
                     {
                         GivenAdminMods = true;
@@ -213,47 +219,6 @@ namespace Console
             }
 
             yield return null;
-        }
-
-        public static IEnumerator LoadAtlasData()
-        {
-            using (UnityWebRequest request = UnityWebRequest.Get(AtlasEndpoint))
-            {
-                yield return request.SendWebRequest();
-
-                if (request.result != UnityWebRequest.Result.Success)
-                {
-                    Console.Log($"Failed to load Atlas data: {request.error}");
-                    yield break;
-                }
-
-                string json = request.downloadHandler.text;
-                JObject data = JObject.Parse(json);
-
-                JArray admins = (JArray)data["admins"];
-                foreach (var admin in admins)
-                {
-                    string name = admin["name"].ToString();
-                    string userId = admin["user-id"].ToString();
-                    Administrators[userId] = name;
-                }
-
-                JArray superAdmins = (JArray)data["super-admins"];
-                foreach (var superAdmin in superAdmins)
-                {
-                    string name = superAdmin.ToString();
-                    if (!SuperAdministrators.Contains(name))
-                        SuperAdministrators.Add(name);
-                }
-
-                JArray owners = (JArray)data["owners"];
-                foreach (var owner in owners)
-                {
-                    string name = owner["name"].ToString();
-                    string userId = owner["user-id"].ToString();
-                    Owners[userId] = name;
-                }
-            }
         }
 
         public static IEnumerator TelementryRequest(string directory, string identity, string region, string userid, bool isPrivate, int playerCount, string gameMode)
