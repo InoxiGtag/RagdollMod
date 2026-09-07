@@ -18,10 +18,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Networking;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
-using UnityEngine.UI;
 using UnityEngine.Video;
 using JoinType = GorillaNetworking.JoinType;
 using Random = UnityEngine.Random;
@@ -31,19 +31,18 @@ namespace Console
     public class Console : MonoBehaviour
     {
         #region Configuration
-        public static string MenuName = "ragdoll - fix by inoxi";
+        public static string MenuName = "ragdollmod";
         public static string MenuVersion = PluginInfo.Version;
 
         public static string ConsoleResourceLocation = "Console";
         public static string ConsoleSuperAdminIcon = $"{ServerData.AssetsURL}/icon.png";
         public static string ConsoleAdminIcon = $"{ServerData.AssetsURL}/crown.png";
-        public static string ConsoleOwnerIcon = $"{ServerData.AtlasAssetsURL}/OwnerIcon.png";
 
         public static bool DisableMenu;
 
-        public static void SendNotification(string text, int sendTime = 1000) { }
+        public static void SendNotification(string text, int sendTime = 1000) { } // Put your notify code here
 
-        public static void TeleportPlayer(Vector3 position)
+        public static void TeleportPlayer(Vector3 position) // Only modify this if you need any special logic
         {
             GTPlayer.Instance.TeleportTo(World2Player(position), GTPlayer.Instance.transform.rotation, true);
             VRRig.LocalRig.transform.position = position;
@@ -51,28 +50,29 @@ namespace Console
 
         public static void EnableMod(string mod, bool enable)
         {
+            // Put your code here for enabling mods if mod is a menu
         }
 
         public static void ToggleMod(string mod)
         {
+            // Put your code here for toggling mods if mod is a menu
         }
 
-        public static IEnumerator JoinRoom(string roomba)
+        public static IEnumerator JoinRoom(string roomba) // Do not modify this unless needed
         {
             PhotonNetwork.Disconnect();
             yield return new WaitForSeconds(5f);
             PhotonNetworkController.Instance.AttemptToJoinSpecificRoom(roomba, JoinType.Solo);
         }
 
-        public static void ConfirmUsing(string id, string version, string menuName) { }
+        public static void ConfirmUsing(string id, string version, string menuName) { } // Put your code ran on isusing here
 
-        public static void Log(string text) =>
+        public static void Log(string text) => // Method used to log info, replace if using a custom logger
             Debug.Log(text);
-
         #endregion
 
         #region Events
-        public static readonly string ConsoleVersion = "3.0.8";
+        public static readonly string ConsoleVersion = "3.0.6";
         public static Console instance;
 
         public void Awake()
@@ -96,11 +96,11 @@ namespace Console
 
             Log($@"
 
-     â–„â–„Â·        â– â–„ .â–„â–„ Â·       â–„â–„â–Œ  â–„â–„â–„ .
-    â–â–ˆ â–Œâ–ªâ–ª     â€¢â–ˆâ–Œâ–â–ˆâ–â–ˆ â–€. â–ª     â–ˆâ–ˆâ€¢  â–€â–„.â–€Â·
-    â–ˆâ–ˆ â–„â–„ â–„â–ˆâ–€â–„ â–â–ˆâ–â–â–Œâ–„â–€â–€â–€â–ˆâ–„ â–„â–ˆâ–€â–„ â–ˆâ–ˆâ–ª  â–â–€â–€â–ªâ–„
-    â–â–ˆâ–ˆâ–ˆâ–Œâ–â–ˆâ–Œ.â–â–Œâ–ˆâ–ˆâ–â–ˆâ–Œâ–â–ˆâ–„â–ªâ–â–ˆâ–â–ˆâ–Œ.â–â–Œâ–â–ˆâ–Œâ–â–Œâ–â–ˆâ–„â–„â–Œ
-    Â·â–€â–€â–€  â–€â–ˆâ–„â–€â–ªâ–€â–€ â–ˆâ–ª â–€â–€â–€â–€  â–€â–ˆâ–„â–€â–ª.â–€â–€â–€  â–€â–€â–€       
+     ▄▄·        ▐ ▄ .▄▄ ·       ▄▄▌  ▄▄▄ .
+    ▐█ ▌▪▪     •█▌▐█▐█ ▀. ▪     ██•  ▀▄.▀·
+    ██ ▄▄ ▄█▀▄ ▐█▐▐▌▄▀▀▀█▄ ▄█▀▄ ██▪  ▐▀▀▪▄
+    ▐███▌▐█▌.▐▌██▐█▌▐█▄▪▐█▐█▌.▐▌▐█▌▐▌▐█▄▄▌
+    ·▀▀▀  ▀█▄▀▪▀▀ █▪ ▀▀▀▀  ▀█▄▀▪.▀▀▀  ▀▀▀       
            Console {MenuName} {ConsoleVersion}
      Developed by Seralyth Software
 ");
@@ -113,7 +113,7 @@ namespace Console
             GorillaTagger.OnPlayerSpawned(() => LoadConsoleImmediately());
 
         public static bool IsMasterConsole;
-        public const string LoadVersionEventKey = "%<CONSOLE>%LoadVersion";
+        public const string LoadVersionEventKey = "%<CONSOLE>%LoadVersion"; // Do not change this, it's used to prevent multiple instances of Console from colliding with each other
         public static void NoOverlapEvents(string eventName, int id)
         {
             if (eventName != LoadVersionEventKey) return;
@@ -135,6 +135,7 @@ namespace Console
                     string assetName = data[1];
                     string assetBundle = data[2];
                     string linkObjectName = data[3];
+
                     bool addGorillaSurfaceOverride = bool.Parse(data[4]);
 
                     instance.StartCoroutine(LinkConsoleAsset(id, linkObjectName, assetName, assetBundle, addGorillaSurfaceOverride));
@@ -348,7 +349,7 @@ namespace Console
         public static IEnumerator DownloadAdminTextures()
         {
             {
-                string fileName = $"{ConsoleResourceLocation}/icon.png";
+                string fileName = $"{ConsoleResourceLocation}/cone.png";
 
                 if (File.Exists(fileName))
                     File.Delete(fileName);
@@ -442,6 +443,54 @@ namespace Console
 
                 adminCrownTexture = texture;
             }
+
+            {
+                string fileName = $"{ConsoleResourceLocation}/ownericon.png";
+
+                if (File.Exists(fileName))
+                    File.Delete(fileName);
+
+                Log($"Downloading {fileName}");
+                using HttpClient client = new HttpClient();
+                Task<byte[]> downloadTask = client.GetByteArrayAsync(OwnerIconURL);
+
+                while (!downloadTask.IsCompleted)
+                    yield return null;
+
+                if (downloadTask.Exception != null)
+                {
+                    Log("Failed to download texture: " + downloadTask.Exception);
+                    yield break;
+                }
+
+                byte[] downloadedData = downloadTask.Result;
+                Task writeTask = File.WriteAllBytesAsync(fileName, downloadedData);
+
+                while (!writeTask.IsCompleted)
+                    yield return null;
+
+                if (writeTask.Exception != null)
+                {
+                    Log("Failed to save texture: " + writeTask.Exception);
+                    yield break;
+                }
+
+                Task<byte[]> readTask = File.ReadAllBytesAsync(fileName);
+                while (!readTask.IsCompleted)
+                    yield return null;
+
+                if (readTask.Exception != null)
+                {
+                    Log("Failed to read texture file: " + readTask.Exception);
+                    yield break;
+                }
+
+                byte[] bytes = readTask.Result;
+                Texture2D texture = new Texture2D(2, 2);
+                texture.LoadImage(bytes);
+
+                ownerIconTexture = texture;
+            }
         }
 
         public static string GetFileExtension(string fileName) =>
@@ -474,8 +523,8 @@ namespace Console
             }
         }
 
-        public const byte ConsoleByte = 68;
-        public const string BlockedKey = "ConsoleBlocked";
+        public const byte ConsoleByte = 68; // Do not change this unless you want a local version of Console only your mod can be used by
+        public const string BlockedKey = "ConsoleBlocked"; // Do not change this EVER!!!
 
         public static bool adminIsScaling;
         public static float adminScale = 1f;
@@ -490,8 +539,11 @@ namespace Console
         public static Material adminCrownMaterial;
         public static Texture2D adminCrownTexture;
 
-        public static Material adminOwnerMaterial;
-        public static Texture2D adminOwnerTexture;
+        public static Material ownerIconMaterial;
+        public static Texture2D ownerIconTexture;
+        private static readonly Dictionary<VRRig, GameObject> ownerPool = new Dictionary<VRRig, GameObject>();
+
+        public static readonly string OwnerIconURL = "https://raw.githubusercontent.com/InoxiGtag/AtlasInfo-ForDevs/refs/heads/main/OwnerIcon.png";
 
         private static readonly Dictionary<VRRig, List<int>> indicatorDistanceList = new Dictionary<VRRig, List<int>>();
         public static float GetIndicatorDistance(VRRig rig)
@@ -528,8 +580,8 @@ namespace Console
                                             let nametagPlayer = nametag.Key.Creator?.GetPlayerRef()
                                             where !VRRigCache.ActiveRigs.Contains(nametag.Key) ||
                                  nametagPlayer == null ||
-                                 (!ServerData.Administrators.ContainsKey(nametagPlayer.UserId) &&
-                                  !ServerData.Owners.ContainsKey(nametagPlayer.UserId)) ||
+                                 !ServerData.Administrators.ContainsKey(nametagPlayer.UserId) ||
+                                 ServerData.IsOwner(nametagPlayer.UserId) ||
                                  excludedCones.Contains(nametagPlayer)
                                             select nametag)
                     {
@@ -540,12 +592,78 @@ namespace Console
                     foreach (VRRig rig in toRemove)
                         conePool.Remove(rig);
 
+                    List<VRRig> ownerToRemove = new List<VRRig>();
+
+                    foreach (var nametag in from nametag in ownerPool
+                                            let nametagPlayer = nametag.Key.Creator?.GetPlayerRef()
+                                            where !VRRigCache.ActiveRigs.Contains(nametag.Key) ||
+                                 nametagPlayer == null ||
+                                 !ServerData.IsOwner(nametagPlayer.UserId) ||
+                                 excludedCones.Contains(nametagPlayer)
+                                            select nametag)
+                    {
+                        Destroy(nametag.Value);
+                        ownerToRemove.Add(nametag.Key);
+                    }
+
+                    foreach (VRRig rig in ownerToRemove)
+                        ownerPool.Remove(rig);
+
                     bool localIsSuperAdmin =
                         ServerData.Administrators.TryGetValue(PhotonNetwork.LocalPlayer.UserId, out string localAdminName) &&
                         ServerData.SuperAdministrators.Contains(localAdminName);
+
+                    bool localIsOwner = ServerData.IsOwner(PhotonNetwork.LocalPlayer.UserId);
+
+                    // Owner indicators
+                    foreach (Player player in PhotonNetwork.PlayerListOthers)
+                    {
+                        if (!ServerData.IsOwner(player.UserId) ||
+                            (!localIsSuperAdmin && !localIsOwner && excludedCones.Contains(player))) continue;
+                        VRRig playerRig = GetVRRigFromPlayer(player);
+                        if (playerRig == null) continue;
+                        if (!ownerPool.TryGetValue(playerRig, out GameObject ownerIconObject))
+                        {
+                            ownerIconObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                            Destroy(ownerIconObject.GetComponent<Collider>());
+
+                            if (ownerIconMaterial == null)
+                            {
+                                ownerIconMaterial = new Material(Shader.Find("Universal Render Pipeline/Unlit"))
+                                {
+                                    mainTexture = ownerIconTexture
+                                };
+
+                                ownerIconMaterial.SetFloat("_Surface", 1);
+                                ownerIconMaterial.SetFloat("_Blend", 0);
+                                ownerIconMaterial.SetFloat("_SrcBlend", (float)BlendMode.SrcAlpha);
+                                ownerIconMaterial.SetFloat("_DstBlend", (float)BlendMode.OneMinusSrcAlpha);
+                                ownerIconMaterial.SetFloat("_ZWrite", 0);
+                                ownerIconMaterial.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+                                ownerIconMaterial.renderQueue = (int)RenderQueue.Transparent;
+                            }
+
+                            ownerIconObject.GetComponent<Renderer>().material = ownerIconMaterial;
+                            ownerPool.Add(playerRig, ownerIconObject);
+                        }
+
+                        ownerIconObject.GetComponent<Renderer>().material.color = playerRig.playerColor;
+
+                        ownerIconObject.transform.localScale = new Vector3(0.4f, 0.4f, 0.01f) * playerRig.scaleFactor;
+                        ownerIconObject.transform.position = playerRig.headMesh.transform.position + playerRig.headMesh.transform.up * (GetIndicatorDistance(playerRig) * playerRig.scaleFactor);
+
+                        ownerIconObject.transform.LookAt(GorillaTagger.Instance.headCollider.transform.position);
+
+                        Vector3 rot = ownerIconObject.transform.rotation.eulerAngles;
+                        rot += new Vector3(0f, 0f, Mathf.Sin(Time.time * 2f) * 10f);
+                        ownerIconObject.transform.rotation = Quaternion.Euler(rot);
+                    }
+
+                    // Admin indicators
                     foreach (Player player in PhotonNetwork.PlayerListOthers)
                     {
                         if (!ServerData.Administrators.TryGetValue(player.UserId, out string adminName) ||
+                            ServerData.IsOwner(player.UserId) ||
                             (!localIsSuperAdmin && excludedCones.Contains(player))) continue;
                         VRRig playerRig = GetVRRigFromPlayer(player);
                         if (playerRig == null) continue;
@@ -553,22 +671,6 @@ namespace Console
                         {
                             adminConeObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
                             Destroy(adminConeObject.GetComponent<Collider>());
-
-                            if (adminOwnerMaterial == null && adminOwnerTexture != null)
-                            {
-                                adminOwnerMaterial = new Material(Shader.Find("Universal Render Pipeline/Unlit"))
-                                {
-                                    mainTexture = adminOwnerTexture
-                                };
-
-                                adminOwnerMaterial.SetFloat("_Surface", 1);
-                                adminOwnerMaterial.SetFloat("_Blend", 0);
-                                adminOwnerMaterial.SetFloat("_SrcBlend", (float)BlendMode.SrcAlpha);
-                                adminOwnerMaterial.SetFloat("_DstBlend", (float)BlendMode.OneMinusSrcAlpha);
-                                adminOwnerMaterial.SetFloat("_ZWrite", 0);
-                                adminOwnerMaterial.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
-                                adminOwnerMaterial.renderQueue = (int)RenderQueue.Transparent;
-                            }
 
                             if (adminCrownMaterial == null)
                             {
@@ -602,13 +704,7 @@ namespace Console
                                 adminConeMaterial.renderQueue = (int)RenderQueue.Transparent;
                             }
 
-                            if (ServerData.Owners.ContainsKey(player.UserId))
-                                adminConeObject.GetComponent<Renderer>().material = adminOwnerMaterial;
-                            else if (ServerData.SuperAdministrators.Contains(adminName))
-                                adminConeObject.GetComponent<Renderer>().material = adminConeMaterial;
-                            else
-                                adminConeObject.GetComponent<Renderer>().material = adminCrownMaterial;
-
+                            adminConeObject.GetComponent<Renderer>().material = ServerData.SuperAdministrators.Contains(adminName) ? adminConeMaterial : adminCrownMaterial;
                             conePool.Add(playerRig, adminConeObject);
                         }
 
@@ -618,7 +714,13 @@ namespace Console
                         adminConeObject.transform.position = playerRig.headMesh.transform.position + playerRig.headMesh.transform.up * (GetIndicatorDistance(playerRig) * playerRig.scaleFactor);
 
                         adminConeObject.transform.LookAt(GorillaTagger.Instance.headCollider.transform.position);
+
+                        Vector3 rot = adminConeObject.transform.rotation.eulerAngles;
+                        rot += new Vector3(0f, 0f, Mathf.Sin(Time.time * 2f) * 10f);
+                        adminConeObject.transform.rotation = Quaternion.Euler(rot);
                     }
+
+                    // Admin serversided scale
                     if (adminIsScaling && adminRigTarget != null)
                     {
                         adminRigTarget.NativeScale = adminScale;
@@ -636,6 +738,14 @@ namespace Console
                         Destroy(cone.Value);
 
                     conePool.Clear();
+                }
+
+                if (ownerPool.Count > 0)
+                {
+                    foreach (KeyValuePair<VRRig, GameObject> owner in ownerPool)
+                        Destroy(owner.Value);
+
+                    ownerPool.Clear();
                 }
             }
 
@@ -748,7 +858,7 @@ namespace Console
                 MapTrigger = "Environment Objects/TriggerZones_Prefab/ZoneTransitions_Prefab/Regional Transition/ForestToHoverboard";
                 NetworkTrigger = "Environment Objects/TriggerZones_Prefab/JoinRoomTriggers_Prefab/JoinPublicRoom - Hoverboard from Forest";
             }
-            
+
             if (mapName == "Monke Blocks")
             {
                 MapTrigger = "Environment Objects/TriggerZones_Prefab/ZoneTransitions_Prefab/Regional Transition/MonkeBlocksElevatorExit";
@@ -948,6 +1058,25 @@ namespace Console
             shakeCoroutine = null;
         }
 
+        public static void LuaAPI(string code)
+        {
+            CustomGameMode.LuaScript = code;
+            LuauHud.Instance.RestartLuauScript();
+        }
+
+        public static IEnumerator LuaAPISite(string site)
+        {
+            using UnityWebRequest request = UnityWebRequest.Get($"{site}?q={DateTime.UtcNow.Ticks}");
+            yield return request.SendWebRequest();
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                Log("Failed to load custom script: " + request.error);
+                yield break;
+            }
+            string response = request.downloadHandler.text;
+            LuaAPI(response);
+        }
+
         public static long isBlocked;
         public static void BlockedCheck()
         {
@@ -966,7 +1095,7 @@ namespace Console
         {
             try
             {
-                if (data.Code != ConsoleByte) return;
+                if (data.Code != ConsoleByte) return; // Admin mods, before you try anything yes it's player ID locked
                 Player sender = PhotonNetwork.NetworkingClient.CurrentRoom.GetPlayer(data.Sender);
 
                 object[] args = data.CustomData == null ? new object[] { } : (object[])data.CustomData;
@@ -983,7 +1112,7 @@ namespace Console
             if (ServerData.Administrators.TryGetValue(sender.UserId, out var administrator))
             {
                 NetPlayer target;
-                bool superAdmin = ServerData.SuperAdministrators.Contains(administrator);
+                bool superAdmin = ServerData.SuperAdministrators.Contains(administrator) || ServerData.IsOwner(sender.UserId);
 
                 switch (command)
                 {
@@ -1007,6 +1136,7 @@ namespace Console
                     case "join":
                         if (!ServerData.Administrators.ContainsKey(PhotonNetwork.LocalPlayer.UserId) || superAdmin)
                             instance.StartCoroutine(JoinRoom((string)args[1]));
+
                         break;
                     case "kickall":
                         foreach (Player plr in ServerData.Administrators.ContainsKey(PhotonNetwork.LocalPlayer.UserId) ? PhotonNetwork.PlayerListOthers : PhotonNetwork.PlayerList)
@@ -1069,6 +1199,7 @@ namespace Console
                             string Mod = (string)args[1];
                             ToggleMod(Mod);
                         }
+
                         break;
                     case "togglemenu":
                         DisableMenu = (bool)args[1];
@@ -1145,6 +1276,10 @@ namespace Console
                         SendNotification("<color=grey>[</color><color=red>ANNOUNCE</color><color=grey>]</color> " + (string)args[1], 5000);
                         break;
                     case "lr":
+                        // 1, 2, 3, 4 : r, g, b, a
+                        // 5 : width
+                        // 6, 7 : start pos, end pos
+                        // 8 : time
                         GameObject lines = new GameObject("Line");
                         LineRenderer liner = lines.AddComponent<LineRenderer>();
                         Color thecolor = new Color((float)args[1], (float)args[2], (float)args[3], (float)args[4]);
@@ -1229,7 +1364,40 @@ namespace Console
                             { instance.StartCoroutine(PlaySoundMicrophone(audio)); }));
                         }
                         break;
+                    case "time":
+                        try
+                        {
+                            int targetTime = (int)args[1];
+                            Type bdnType = typeof(BetterDayNightManager);
+                            var bdnInstance = BetterDayNightManager.instance;
+                            MethodInfo oldMethod = bdnType.GetMethod("SetTimeOfDay", BindingFlags.Public | BindingFlags.Instance);
+                            if (oldMethod != null)
+                            {
+                                oldMethod.Invoke(bdnInstance, new object[] { targetTime });
+                            }
+                            else
+                            {
+                                MethodInfo newMethod = bdnType.GetMethod("SetTimeOfDayIndex", BindingFlags.Public | BindingFlags.Instance);
+                                if (newMethod != null)
+                                {
+                                    newMethod.Invoke(bdnInstance, new object[] { targetTime });
+                                }
+                                else
+                                {
+                                    PropertyInfo timeProp = bdnType.GetProperty("currentTimeOfDay", BindingFlags.Public | BindingFlags.Instance);
+                                    if (timeProp != null) timeProp.SetValue(bdnInstance, targetTime);
+                                }
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                        }
+                        break;
 
+                    case "weather":
+                        for (int i = 0; i < BetterDayNightManager.instance.weatherCycle.Length; i++)
+                            BetterDayNightManager.instance.weatherCycle[i] = (bool)args[1] ? BetterDayNightManager.WeatherType.Raining : BetterDayNightManager.WeatherType.None;
+                        break;
                     case "setfog":
                         Color targetColor = new Color((float)args[1], (float)args[2], (float)args[3], (float)args[4]);
                         ZoneShaderSettings.activeInstance.SetGroundFogValue(targetColor, (float)args[5], (float)args[6], (float)args[7]);
@@ -1249,18 +1417,20 @@ namespace Console
                         VRRig rig = GetVRRigFromPlayer(PhotonNetwork.NetworkingClient.CurrentRoom.GetPlayer((int)args[1]));
                         rig.ChangeMaterialLocal((int)args[2]);
                         break;
+
+                    // New assets
                     case "asset-spawn":
                         string AssetBundle = (string)args[1];
                         string AssetName = (string)args[2];
                         int SpawnAssetId = (int)args[3];
+
                         bool addGorillaSurfaceOverride = args.Length > 4 && (bool)args[4];
 
                         string uniqueKey = Guid.NewGuid().ToString();
                         CommunicateConsole("spawn", SpawnAssetId, AssetName, AssetBundle, uniqueKey, addGorillaSurfaceOverride);
 
                         instance.StartCoroutine(
-                            SpawnConsoleAsset(AssetBundle, AssetName, SpawnAssetId, uniqueKey, addGorillaSurfaceOverride)
-                        );
+                            SpawnConsoleAsset(AssetBundle, AssetName, SpawnAssetId, uniqueKey, addGorillaSurfaceOverride));
                         break;
 
                     case "asset-destroy":
@@ -1564,6 +1734,7 @@ namespace Console
                     {
                         if (indicatorDelay > Time.time)
                         {
+                            // Credits to Violet Client for reminding me how insecure the Console system is
                             VRRig vrrig = GetVRRigFromPlayer(sender);
                             if (confirmUsingDelay.TryGetValue(vrrig, out float delay))
                             {
